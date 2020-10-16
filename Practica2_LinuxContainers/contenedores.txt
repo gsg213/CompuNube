@@ -1,12 +1,12 @@
-***Cree un contenedor 20.04 de 64 bits en la maquina Vagrant
-servidorUbuntu. El contenedor se deberá llamar server
+===Cree un contenedor 20.04 de 64 bits en la maquina Vagrant
+===servidorUbuntu. El contenedor se deberá llamar server
 
 lxc launch ubuntu:20.04 server
 
 lxc list
 
-***Instale un servidor web en el contenedor (server) y verifique su
-funcionamiento desde la red local (red del host, ver punto 3.4)
+===Instale un servidor web en el contenedor (server) y verifique su
+===funcionamiento desde la red local (red del host, ver punto 3.4)
 
 lxc exec server -- apt-get install apache2
 
@@ -21,19 +21,19 @@ lxc config device add server myport22 proxy listen=tcp:192.168.100.3:1026 connec
 
 lxc info server
 
-***Instale SSH en el servidor (Punto 3.5) 
+===Instale SSH en el servidor (Punto 3.5) 
 
 sudo lxc exec server bash
-nano /etc/ssh/sshd_config
+#nano /etc/ssh/sshd_config
 
-PasswordAuthentication yes
+#PasswordAuthentication yes
 
-service sshd restart
+#service sshd restart
 
-***Inicie sesión SSH en el contenedor server desde la maquina Vagrant clienteUbuntu. 
-Para esto tener en cuenta:
+===Inicie sesión SSH en el contenedor server desde la maquina Vagrant clienteUbuntu. 
+===Para esto tener en cuenta:
 
-**Cree Un nuevo usuario en el contenedor llamado remoto (adduser remoto)
+==Cree Un nuevo usuario en el contenedor llamado remoto (adduser remoto)
 
 adduser remoto
 
@@ -44,12 +44,12 @@ exit
 ssh-keygen
 ssh-copy-id remoto@10.132.109.140
 
-**Realice el reenvío de puertos necesario: del puerto 22 del contenedor al un puerto que 
-ud. escoja (por encima del 1023) de la maquina servidorUbuntu
+==Realice el reenvío de puertos necesario: del puerto 22 del contenedor al un puerto que 
+==ud. escoja (por encima del 1023) de la maquina servidorUbuntu
 
 lxc config device add server myport80 proxy listen=tcp:192.168.100.3:1025 connect=tcp:127.0.0.1:80
 
-**Para copiar la clave publica generada en clienteUbuntu al contedor puede usar un comando similar a este: 
+==Para copiar la clave publica generada en clienteUbuntu al contedor puede usar un comando similar a este: 
 
 lxc info server
 
@@ -60,12 +60,12 @@ ssh-keygen
 
 ssh-copy-id -p 1026 remoto@192.168.100.3 
 
-**Inicie sesion SSH remotamente. Usando un comando similar a este:
+==Inicie sesion SSH remotamente. Usando un comando similar a este:
 
 ssh -p 1026 remoto@192.158.100.3
 
-**Transfiera un archivo al servidor usando scp.
+==Transfiera un archivo al servidor usando scp.
 
 touch archivo_nuevo
 
-scp -P 1026 archivo_nuevo remoto@192.168.100.3
+scp -P 1026 archivo_nuevo remoto@192.168.100.3:~/
