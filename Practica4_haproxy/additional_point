@@ -1,0 +1,71 @@
+# VM creation with vagrant
+
+vagrant up
+
+################ web servers ################
+# web1 & web2: install apache
+
+sudo apt-get install apache2 -y
+
+# web1 & web2: enable apache
+
+sudo systemctl enable apache2
+
+# web1 & web2: modidfy index.html
+
+sudo nano /var/www/html/index.html
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NEW PAGE</title>
+  </head>
+  <body>
+	<h1>Cuando el proyecto funciona y el profesor esta ahi para verlo</h1>
+	<h2>Yo:</h2>
+    <img src="https://i.ytimg.com/vi/o_2B2tBGzhI/maxresdefault.jpg">
+  </body>
+</html>
+
+# web1 & web2: start apache server
+
+sudo systemctl start apache2
+
+# web1 & web2: verify index
+
+curl 192.168.100.4
+curl 192.168.100.5
+
+################ haproxy VM ################
+# haproxy: install haproxy in the VM
+
+sudo apt-get install haproxy
+
+# haproxy: enable haproxy
+
+sudo systemctl enable haproxy
+
+# haproxy: modify haproxy config file
+
+sudo nano /etc/haproxy/haproxy.cfg
+
+backend web-backend
+   balance roundrobin
+   stats enable
+   stats auth admin:admin
+   stats uri /haproxy?stats
+
+   server web1Ubuntu 192.168.100.4:80 check
+   server web2Ubuntu 192.168.100.5:80 check
+
+frontend http
+  bind *:80
+  default_backend web-backend
+
+# haproxy: verify config file
+
+cat /etc/haproxy/haproxy.cfg
+
+# haproxy: start haproxy server load balancer
+
+sudo systemctl start haproxy
