@@ -1,0 +1,32 @@
+# revisar las 3 VM
+
+vagrant status
+
+# revisar index.html en los servidores web
+
+vagrant ss web1Ubuntu
+sudo nano /var/www/html/index.html
+cat /var/www/html/index.html
+
+# acceder a haproxy VM
+
+vagrant ssh haproxyUbuntu
+
+# revisar archivo config haproxy
+
+cat /etc/haproxy/haproxy.cfg
+
+# desde el servidor haproxy tener acceso a los otros servidores
+
+curl 192.168.100.4:80
+curl 192.168.100.5:80
+
+# acceso a haproxy
+
+http://192.168.100.3/haproxy?stats
+
+# acceso al servicio web
+
+http://192.168.100.3:80
+
+
