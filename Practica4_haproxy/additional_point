@@ -54,6 +54,7 @@ backend web-backend
    stats enable
    stats auth admin:admin
    stats uri /haproxy?stats
+   stats refresh 1s
 
    server web1Ubuntu 192.168.100.4:80 check
    server web2Ubuntu 192.168.100.5:80 check
