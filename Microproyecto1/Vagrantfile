@@ -1,0 +1,26 @@
+# -- mode: ruby --
+# vi: set ft=ruby :
+
+
+Vagrant.configure("2") do |config|
+  config.vm.define :loadBalancer do |loadBalancer|
+    loadBalancer.vm.box = "bento/ubuntu-20.04"
+    #loadBalancer.vm.provision :shell, path: "provisioner_haproxy.sh"
+    loadBalancer.vm.network :private_network, ip: "192.168.100.4"
+    loadBalancer.vm.hostname = "loadBalancer"
+  end
+
+  MACHINE = 3
+  (2..MACHINE).each do |i|
+    config.vm.define "web#{i}" do |node|
+    node.vm.box = "bento/ubuntu-20.04"
+    node.vm.provision "shell" do |s|
+       s.path = "provisioner_backend.sh"
+       s.args = [i,'hello','world']
+    end
+    node.vm.network :private_network, ip: "192.168.100.#{i}"
+    node.vm.hostname = "web#{i}"
+    end
+  end
+
+end
