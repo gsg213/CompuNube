@@ -1,0 +1,37 @@
+config:
+  core.https_address: 192.168.100.4:8443
+  core.trust_password: admin
+networks:
+- config:
+    bridge.mode: fan
+    fan.underlay_subnet: 192.168.100.0/24
+  description: ""
+  name: lxdfan0
+  type: ""
+  project: default
+storage_pools:
+- config: {}
+  description: ""
+  name: local
+  driver: dir
+profiles:
+- config: {}
+  description: ""
+  devices:
+    eth0:
+      name: eth0
+      network: lxdfan0
+      type: nic
+    root:
+      path: /
+      pool: local
+      type: disk
+  name: default
+cluster:
+  server_name: vagrantVM1
+  enabled: true
+  member_config: []
+  cluster_address: ""
+  cluster_certificate: ""
+  server_address: ""
+  cluster_password: ""
