@@ -1,0 +1,15 @@
+HTTP/1.0 503 Service Unavailable
+Cache-Control: no-cache
+Connection: close
+Content-Type: text/html
+
+<HTML>
+    <head>
+      <title>503</title>
+    </head>
+    <BODY>
+        <h1 style="text-align: center;">All servers are down!</h1>
+        <h2 style="text-align: center;">Sorry, we're under maintenance</h2>
+        <img style="display: block; margin-left: auto; margin-right: auto;" src="https://i.imgur.com/8NxwEwX.gif" />
+    </BODY>
+</HTML>
