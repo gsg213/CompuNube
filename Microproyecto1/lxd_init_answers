@@ -1,0 +1,14 @@
+========== lxd initi for web2 =============
+vagrant@web2:~$ sudo lxd init
+Would you like to use LXD clustering? (yes/no) [default=no]: yes
+What name should be used to identify this node in the cluster? [default=web2]: web2
+What IP address or DNS name should be used to reach this node? [default=10.0.2.15]: 192.168.100.2
+Are you joining an existing cluster? (yes/no) [default=no]: yes
+IP address or FQDN of an existing cluster node: 192.168.100.4
+Cluster fingerprint: db7384b0d7cab571386b294af3dea456f39f342f7cc6b37ea30afbd64f055c3b
+You can validate this fingerprint by running "lxc info" locally on an existing node.
+Is this the correct fingerprint? (yes/no) [default=no]: yes
+Cluster trust password: 
+All existing data is lost when joining a cluster, continue? (yes/no) [default=no] yes
+Choose "source" property for storage pool "local": 
+Would you like a YAML "lxd init" preseed to be printed? (yes/no) [default=no]: yes
