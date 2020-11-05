@@ -1,0 +1,211 @@
+
+## create and edit yaml
+
+touch docker-compose.yml
+
+nano docker-compose.yml
+
+version: "1"
+services:
+  
+  web:
+    image: nginx
+
+  database:
+    image: redis
+
+## check yaml
+
+docker-compose config
+
+## create container
+
+sudo docker-compose up -d
+
+## check container
+
+sudo docker-compose ps
+sudo docker ps
+
+## stop containers
+
+sudo docker-compose down
+
+## complete yml https://hub.docker.com/_/nginx
+
+nano docker-compose.yml
+
+version: "3"
+services:
+  web:
+    image: nginx
+    ports:
+    - 9090:80/tcp
+  database:
+    image: redis
+
+## create and stop again
+
+sudo docker-compose up -d
+sudo docker-compose ps
+sudo docker-compose down
+
+##### scale
+
+sudo docker-compose up -d --scale database=4
+
+sudo docker-compose ps
+
+#### Docker compose + Flask + MySQL
+
+git clone https://github.com/stavshamir/docker-tutorial
+
+tree
+
+cd docker-tutorial/
+
+cat docker-compose.yml
+
+cat app/requirements.txt
+
+cat app/Dockerfile
+
+cat db/init.sql
+
+##========================Punto 2 ================
+
+mkdir tensorFlow
+
+cd tensorflow
+
+nano docker-compose.yml
+
+version: '3'
+services:
+   jupyter:      
+    image: registry.cn-hangzhou.aliyuncs.com/denverdino/tensorflow:0.9.0      
+    ports:           
+      - "8888:8888"      
+    volumes:        
+      - "/tmp/tensorflow_logs"        
+      - "./notebooks:/root/notebooks"
+    command:        
+      - "/run_jupyter.sh"        
+      - "/root/notebooks"
+   tensorboard:      
+    image: registry.cn-hangzhou.aliyuncs.com/denverdino/tensorflow:0.9.0      
+    ports:        
+      - "6006:6006"      
+    volumes:        
+      - jupyter      
+    command:        
+      - "tensorboard"        
+      - "--logdir"        
+      - "/tmp/tensorflow_logs"        
+      - "--host"        
+      - "0.0.0.0"  
+
+sudo docker-compose up -d
+
+sudo docker-compose ps
+
+
+## jupyter
+http://192.168.100.3:8888/tree
+
+## tensorboard
+http://192.168.100.3:6006/#events
+
+
+##========================Punto extra ================
+## https://docs.docker.com/compose/django/
+
+mkdir django_extra
+
+cd django_extra/
+
+# create yml
+touch docker-compose.yml
+
+# dockerfile creation
+nano Dockerfile
+
+FROM python:3
+ENV PYTHONUNBUFFERED=1
+RUN mkdir /code
+WORKDIR /code
+COPY requirements.txt /code/
+RUN pip install -r requirements.txt
+COPY . /code/
+
+# requeriments
+
+nano requirements.txt
+
+Django>=3.0,<4.0
+psycopg2-binary>=2.8
+
+
+# modify docker compose
+
+nano docker-compose.yml
+
+version: "3"
+   
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+## Create the Django project by running the docker-compose run command 
+
+sudo docker-compose run web django-admin startproject composeexample .
+
+# validate files created
+
+ls -l 
+
+# if you are running Docker on Linux, the files django-admin created are owned by root. This happens because the #container runs as the root user. Change the ownership of the new files.
+
+sudo chown -R $USER:$USER .
+
+ls -l
+
+# edit composeexample/settings.py in DATABASES section
+
+nano composeexample/settings.py
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
+    }
+}
+
+# run manage.py
+
+sudo docker-compose ps
+
+sudo docker-compose up -d
+
+sudo docker exec -it django_extra_web_1 python manage.py migrate
+
+
+
+
