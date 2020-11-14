@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: transfer
+  labels:
+    name: staging
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: transfer
+  labels:
+    app: transfer-style
+  name: transfer-style
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transfer-style
+  template:
+    metadata:
+      labels:
+        app: transfer-style
+    spec: 
+      containers:
+      - image: containersdepp.azurecr.io/style-transfer:v1
+        name: transfer-style
+        resources:
+          limitd:
+            nvidia.com/gpu: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: transfer
+  labels:
+    app: transfer-style
+  name: transfer-style
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: transfer-style
+  type: LoadBalancer
