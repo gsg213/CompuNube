@@ -1,0 +1,170 @@
+#### Guias ####
+# Guia portal Azure https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal
+# Tutorial Kubernetes + Docker https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough
+# Azure Container Registry (ACR) https://docs.microsoft.com/en-us/azure/aks/cluster-container-registry-integration
+# Kubernetes documentation https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/
+
+#### Comandos basicos kubernetes y azure ####
+# To find a node's allocatable resources, run:
+kubectl describe node [NODE_NAME]
+# List projects
+az group list
+
+#### Instalar la CLI de Azure ####
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+az aks install-cli
+az login
+# Comandos de conexion
+az account set --subscription 389dbbf6-5fea-4e4b-ac50-c621e5cf1ef7
+az aks get-credentials --resource-group Project2 --name KubernetesCluster
+kubectl get nodes
+
+#### CBuild image classifier ####
+# Building Pytorch image-classifier's image
+sudo docker build -t gustavosalazar213/image-classifier:latest .
+# Correr el contenedor localmente
+sudo docker run -p 5050:5000 -it --name image_classifier --rm gustavosalazar213/image-classifier
+# Test the app
+curl -X POST -d '{"url": "https://i.imgur.com/jD2hDMc.jpg"}' -H 'Content-Type: application/json' http://192.168.100.3:5050/predict
+
+#### Create an Azure Container Registry ####
+# Create resource group
+az group create --name deepLearning --location eastus
+# Create ACR
+az acr create --resource-group deepLearning --name containersdepp --sku Basic
+# login ACR
+sudo az acr login --name containersdepp
+# Get login server address
+az acr list --resource-group deepLearning --query "[].{acrLoginServer:loginServer}" --output table
+# Tag image to match ACR
+sudo docker tag gustavosalazar213/image-classifier:latest containersdepp.azurecr.io/image-classifier:v1
+# Push image to ACR
+sudo docker push containersdepp.azurecr.io/image-classifier:v1
+# List images in registry
+az acr repository list --name containersdepp --output table
+# Check tags of an image
+az acr repository show-tags --name containersdepp --repository image-classifier --output table
+
+#### Create an Azure Kubernetes cluster ####
+az aks create \
+    --resource-group deepLearning \
+    --name AKSDeepCluster \
+    --node-count 2 \
+    --generate-ssh-keys \
+    --attach-acr containersdepp
+# connect to cluster
+az aks get-credentials --resource-group deepLearning --name AKSDeepCluster
+
+#### Running application in Azure ####
+# Obtainint ACR
+az acr list --resource-group deepLearning --query "[].{acrLoginServer:loginServer}" --output table
+# Deploy the application
+kubectl apply -f image-classifier.yaml
+# List sercices
+kubectl get services --all-namespaces
+# List all pods
+kubectl get pods --all-namespaces
+# Getting pods
+kubectl get pods -n classifier
+# Monitoring pod
+kubectl logs -f image-classifier-66bf485dd7-tkwcj -n classifier
+# Testing service
+curl -X POST -d '{"url": "https://i.imgur.com/jD2hDMc.jpg"}' -H 'Content-Type: application/json' http://52.146.85.115/predict
+# Stop service and pods
+kubectl delete service,deployment image-classifier -n classifier
+
+******************************************************************************************************************************
+
+#### Build style transfer ####
+# Building Pytorch style-transfer image
+sudo docker build -t gustavosalazar213/style-transfer:latest .
+# Correr el contenedor localmente
+sudo docker run -p 5050:5000 -it --name style-transfer --rm gustavosalazar213/style-transfer
+# Test the app
+curl -X POST -d '{"content": "https://i.imgur.com/jD2hDMc.jpg", "style": "https://i.imgur.com/l3ogBgn.jpg", "show_every": 100, "steps": 1000}' -H 'Content-Type: application/json' http://192.168.100.3:5050/transfer
+
+#### Push the container to ACR ####
+# Tag image to match ACR
+sudo docker tag gustavosalazar213/style-transfer:latest containersdepp.azurecr.io/style-transfer:v1
+# Push image to ACR
+sudo docker push containersdepp.azurecr.io/style-transfer:v1
+# List images in registry
+az acr repository list --name containersdepp --output table
+# Check tags of an image
+az acr repository show-tags --name containersdepp --repository style-transfer --output table
+
+#### Running application in Azure (Style-transfer) ####
+# Obtainint ACR
+az acr list --resource-group deepLearning --query "[].{acrLoginServer:loginServer}" --output table
+# Deploy the application
+kubectl apply -f style-transfer.yaml
+# List sercices
+kubectl get services --all-namespaces
+# List all pods
+kubectl get pods --all-namespaces
+# Getting pods
+kubectl get pods -n transfer
+# Log into the page (Web browser)
+http://52.146.68.188/transfer
+# Monitoring pod
+kubectl logs -f transfer-style-6959c74db9-fbcpb -n transfer
+# Testing service
+curl -X POST -d '{"content": "https://i.imgur.com/mEjKnjQ.jpg", "style": "https://i.imgur.com/weyfOUp.jpg", "show_every": 100, "steps": 1000}' -H 'Content-Type: application/json' http://52.142.21.5/transfer
+# Stop service and pods
+kubectl delete service,deployment transfer-style -n transfer
+
+#### Running the app post examples ####
+
+curl -X POST -d '{"content": "https://i.imgur.com/jD2hDMc.jpg", "style": "https://i.imgur.com/l3ogBgn.jpg", "show_every": 100, "steps": 1000}' -H 'Content-Type: application/json' http://0.0.0.0:5000/transfer
+
+curl -X POST -d '{"content": "https://i.imgur.com/jD2hDMc.jpg", "style": "https://i.imgur.com/4DWxIDy.jpg", "show_every": 100, "steps": 1000}' -H 'Content-Type: application/json' http://0.0.0.0:5000/transfer
+
+curl -X POST -d '{"content": "https://i.imgur.com/jD2hDMc.jpg", "style": "https://i.imgur.com/1zlDJVT.jpg", "show_every": 100, "steps": 1000}' -H 'Content-Type: application/json' http://0.0.0.0:5000/transfer
+
+curl -X POST -d '{"content": "https://i.imgur.com/mEjKnjQ.jpg", "style": "https://i.imgur.com/weyfOUp.jpg", "show_every": 100, "steps": 2000}' -H 'Content-Type: application/json' http://0.0.0.0:5000/transfer
+
+curl -X POST -d '{"content": "https://i.imgur.com/jDimNTZ.jpeg", "style": "https://i.imgur.com/uH3SNYt.jpeg", "show_every": 100, "steps": 1000}' -H 'Content-Type: application/json' http://0.0.0.0:5000/transfer
+
+
+
+#### CLUSTER WITH GPU ####
+# Create resource group
+az group create --name deepLearning --location eastus
+# Create ACR
+az acr create --resource-group deepLearning --name containersdepp --sku Basic
+# Login ACR
+sudo az acr login --name containersdepp
+
+az aks create \
+    --resource-group deepLearning \
+    --name myAKSGPUCluster \
+    --node-vm-size Standard_NC6_Promo \
+    --generate-ssh-keys \
+    --attach-acr containersdepp \
+    --node-count 1
+
+# Get credentials
+az aks get-credentials --resource-group deepLearning --name myAKSGPUCluster
+
+# Install device plugin
+kubectl create namespace gpu-resources
+
+# Create Daemon set
+kubectl apply -f nvidia-device-plugin-ds.yaml
+
+# Check nodes
+kubectl get nodes
+
+# Check GPU availability
+kubectl describe node aks-nodepool1-28993262-0
+
+# Apply new policy
+kubectl apply -f style-transfer-gpu.yaml
+
+# Check pods
+kubectl get pods --all-namespaces
+
+# Check activity of service 
+kubectl logs -f transfer-style-66bf485dd7-s9l7z -n transfer
+
+52.186.39.43/transfer
