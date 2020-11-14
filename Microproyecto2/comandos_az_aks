@@ -1,0 +1,53 @@
+#### install azure CLI https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+az aks install-cli
+az login
+
+#### connect to kubernetes cluster
+az account set --subscription 385e8731-8c42-42de-822a-6f33589d35bf
+az aks get-credentials --resource-group Proyecto_2 --name microproyecto_cluster
+
+#### create ACR
+az acr create --resource-group Proyecto_2 --name acrproyecto2 --sku Basic
+
+sudo az acr login --name acrproyecto2
+
+az acr list --resource-group Proyecto_2 --query "[].{acrLoginServer:loginServer}" --output table
+
+sudo docker tag mcr.microsoft.com/azuredocs/azure-vote-front:v1 acrproyecto2.azurecr.io/azure-vote-front:v1
+
+sudo docker push acrproyecto2.azurecr.io/azure-vote-front:v1
+
+az aks create \
+    --resource-group Proyecto_2 \
+    --name myAKSCluster \
+    --node-count 2 \
+    --generate-ssh-keys \
+    --attach-acr acrproyecto2
+
+az aks get-credentials --resource-group Proyecto_2 --name myAKSCluster
+
+kubectl get nodes
+
+#### update manifest
+
+az acr list --resource-group Proyecto_2 --query "[].{acrLoginServer:loginServer}" --output table
+
+nano azure-vote-all-in-one-redis.yaml
+
+containers:
+- name: azure-vote-front
+  image: acrproyecto22.azurecr.io/azure-vote-front:v1
+
+
+#### deploy application
+
+kubectl apply -f azure-vote-all-in-one-redis.yaml
+
+kubectl get service azure-vote-front --watch
+
+
+
+
+
+
