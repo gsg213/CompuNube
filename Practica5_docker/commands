@@ -1,0 +1,52 @@
+### create dir
+mkdir ai_docker
+
+cd ai_docker
+
+### create docker file
+
+nano Dockerfile
+
+FROM jupyter/minimal-notebook
+
+MAINTAINER Gustavo Salazar
+
+# Install required libraries
+RUN pip install tensorflow
+RUN pip install preprocess1
+
+### build image
+
+sudo docker build -t gsalazar/aitools .
+
+### view image 
+
+sudo docker image list
+
+### Create container
+
+sudo docker run --name ai_tools -d -p 5000:80 gsalazar/aitools
+
+sudo docker run --name ai_tools -v /vagrant/files/:/files_docker -p 8888:8888 gsalazar/aitools
+
+sudo docker run -it --name ai_tools --rm -v /vagrant/files/:/home/jovyan/files -p 8888:8888 gsalazar/aitools
+
+### view all containers
+
+sudo docker container list -a
+
+### stop and delete a container
+
+sudo docker container stop 420e480dd15b
+
+sudo docker container rm 420e480dd15b
+
+### access to container
+
+sudo docker exec -it ai_tools
+
+
+
+
+
+
