@@ -1,0 +1,43 @@
+##Commands
+
+export FLASK_APP=apirest.py
+export FLASK_ENV=development
+flask run --host=0.0.0.0
+
+##run app   PARTE 1
+python3 apirest.py
+
+## curl calls
+
+curl -i http://localhost:5000/books
+http://192.168.100.3:5000/books
+
+curl -i http://localhost:5000/books/2
+http://192.168.100.3:5000/books/2
+
+curl -X POST -d '{"title":"El libro"}' -H "Content-Type: application/json"  http://localhost:5000/books
+curl -X POST -d '{"title":"El libro"}' -H "Content-Type: application/json"  http://192.168.100.3:5000/books
+
+curl -X PUT -d '{"author":"Jorgito"}' -H "Content-Type: application/json"  http://localhost:5000/books/2
+curl -X PUT -d '{"author":"Jorgito"}' -H "Content-Type: application/json"  http://192.168.100.3:5000/books/2
+
+curl -X DELETE -H "Content-Type: application/json" http://localhost:5000/books/1
+curl -X DELETE -H "Content-Type: application/json" http://192.168.100.3:5000/books/3
+
+
+##run app   PARTE 2
+
+cd /vagrant/
+cd ~/ubidots_app/
+cat ubidots_app.py
+
+python3 ubidots_app.py
+
+curl -X POST -d '{"wind_vel": 28}' -H "X-Auth-Token: BBFF-15aFO9rnB0theXRJbztWTwb2dw4urr" -H "Content-Type: application/json"  http://industrial.api.ubidots.com/api/v1.6/devices/machine
+
+
+
+
+
+
+
