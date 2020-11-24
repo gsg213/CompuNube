@@ -1,0 +1,108 @@
+### clone repo
+git clone https://github.com/Azure-Samples/functions-python-pytorch-tutorial.git
+
+### review all files
+cd functions-python-pytorch-tutorial
+
+### creates and access virtual env
+cd start
+python3-m venv .venv
+source .venv/bin/activate
+
+
+### initialize func
+func init --worker-runtime python
+
+### add func to project
+func new --name classify --template "HTTP trigger"
+
+### start func local
+func start
+
+### check in browser with 
+http://192.168.100.3:7071/api/classify?name=Azure
+
+###from start folder copy prediction scripts
+cp ../resources/predict.py classify
+cp ../resources/labels.txt classify
+
+### from start folder open file and add lines
+nano requirements.txt
+
+azure-functions
+requests
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==1.5.0+cpu
+torchvision==0.6.0+cpu
+
+### install dependencies
+pip3 install --no-cache-dir -r requirements.txt
+
+### open file classify/__init__.py and change all
+
+import logging
+import azure.functions as func
+import json
+
+# Import helper script
+from .predict import predict_image_from_url
+
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    image_url = req.params.get('img')
+    logging.info('Image URL received: ' + image_url)
+
+    results = predict_image_from_url(image_url)
+
+    headers = {
+        "Content-type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+    }
+
+    return func.HttpResponse(json.dumps(results), headers = headers)
+
+### from start folder and virtual env, with all dependencies installed
+func start
+
+### test with link
+curl -i http://192.168.100.3:7071/api/classify?img=https://raw.githubusercontent.com/Azure-Samples/functions-python-pytorch-tutorial/master/resources/assets/Bernese-Mountain-Dog-Temperament-long.jpg
+
+
+### in frontend folder in a new terminal to start HTTP server 
+cd start
+source .venv/bin/activate
+
+cd ..
+cd frontend
+
+nano index.html
+
+### change localhost:7071 for 192.168.100.3:7071
+
+python -m http.server
+
+### test in a browser
+
+http://192.168.100.3:8000
+
+
+### part 2 to publish in Azure cloud
+
+cd ..
+
+### add app func file
+
+nano app_func
+
+### use same app name in app_func
+cd start
+
+func azure functionapp publish ClassifyFuncApp --build remote
+
+
+https://classifyfuncapp.azurewebsites.net/api/classify?code=nn0zQxijm6tWoZgkop87bk35upXxWMTAON8GizfB6/wJ11LGy8sRtg==&img=https://raw.githubusercontent.com/gvashishtha/functions-pytorch/master/resources/assets/Bernese-Mountain-Dog-Temperament-long.jpg
+
+
+
+
+
+
