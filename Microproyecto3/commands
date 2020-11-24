@@ -93,6 +93,10 @@ cd ..
 
 nano app_func
 
+chmod +x app_func
+
+./app_func
+
 ### use same app name in app_func
 cd start
 
