@@ -1,0 +1,31 @@
+1. create a topic in SNS, type: standard
+
+2. create an email subscription for this topic.
+
+3. confirm email
+
+4. go to Lambda an create a new function in Python runtime
+
+5. add a trigger, API Gateway, API type: REST, Security: open
+
+6. add destination, condition: On success, destination type: SNS topic, Destination: MyTopic
+
+7. add code to Lambda function:
+
+import boto3
+
+def lambda_handler(event, context):
+    # Create an SNS client
+    print('Create an SNS client')
+    sns = boto3.client('sns')
+
+    # Publish a simple message to the specified SNS topic
+    print ('Publish a simple message to the specified SNS topic')
+    response = sns.publish(
+        TopicArn='arn:aws:sns:us-east-1:105777597728:myTopicemail',    
+        Message='Hello World!',
+        Subject='Hello World!'
+    )
+
+    # Print out the response
+    print(response)				
