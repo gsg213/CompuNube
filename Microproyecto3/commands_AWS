@@ -13,19 +13,27 @@
 7. add code to Lambda function:
 
 import boto3
+import json
 
 def lambda_handler(event, context):
     # Create an SNS client
     print('Create an SNS client')
     sns = boto3.client('sns')
+    
+    emailMessage = 'Hello World!'
 
     # Publish a simple message to the specified SNS topic
     print ('Publish a simple message to the specified SNS topic')
     response = sns.publish(
         TopicArn='arn:aws:sns:us-east-1:105777597728:myTopicemail',    
-        Message='Hello World!',
-        Subject='Hello World!'
+        Message = emailMessage,
+        Subject = 'MyFunc API email'
     )
 
     # Print out the response
-    print(response)				
+    print(response)
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Email sent: ' + emailMessage)
+    }
