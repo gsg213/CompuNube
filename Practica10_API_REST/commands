@@ -9,18 +9,23 @@ python3 apirest.py
 
 ## curl calls
 
+#get all
 curl -i http://localhost:5000/books
 http://192.168.100.3:5000/books
 
+#get by ID
 curl -i http://localhost:5000/books/2
-http://192.168.100.3:5000/books/2
+curl -i http://192.168.100.3:5000/books/2
 
+#add new book
 curl -X POST -d '{"title":"El libro"}' -H "Content-Type: application/json"  http://localhost:5000/books
 curl -X POST -d '{"title":"El libro"}' -H "Content-Type: application/json"  http://192.168.100.3:5000/books
 
+#edit book
 curl -X PUT -d '{"author":"Jorgito"}' -H "Content-Type: application/json"  http://localhost:5000/books/2
 curl -X PUT -d '{"author":"Jorgito"}' -H "Content-Type: application/json"  http://192.168.100.3:5000/books/2
 
+#delete book
 curl -X DELETE -H "Content-Type: application/json" http://localhost:5000/books/1
 curl -X DELETE -H "Content-Type: application/json" http://192.168.100.3:5000/books/3
 
@@ -33,7 +38,8 @@ cat ubidots_app.py
 
 python3 ubidots_app.py
 
-curl -X POST -d '{"wind_vel": 28}' -H "X-Auth-Token: BBFF-15aFO9rnB0theXRJbztWTwb2dw4urr" -H "Content-Type: application/json"  http://industrial.api.ubidots.com/api/v1.6/devices/machine
+
+curl -X POST -d '{"temperature": 100}' -H "X-Auth-Token: BBFF-15aFO9rnB0theXRJbztWTwb2dw4urr" -H "Content-Type: application/json"  http://industrial.api.ubidots.com/api/v1.6/devices/machine
 
 
 
