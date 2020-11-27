@@ -89,7 +89,8 @@ http://192.168.100.3:8000
 
 cd ..
 
-### add app func file
+### add app func file and run it, this file publish the function in azure
+cd ~/functions-python-pytorch-tutorial/start/
 
 nano app_func
 
@@ -98,12 +99,10 @@ chmod +x app_func
 ./app_func
 
 ### use same app name in app_func
-cd start
-
-func azure functionapp publish ClassifyFuncApp --build remote
 
 
-https://classifyfuncapp.azurewebsites.net/api/classify?code=nn0zQxijm6tWoZgkop87bk35upXxWMTAON8GizfB6/wJ11LGy8sRtg==&img=https://raw.githubusercontent.com/gvashishtha/functions-pytorch/master/resources/assets/Bernese-Mountain-Dog-Temperament-long.jpg
+
+https://classifyfuncapp.azurewebsites.net/api/classify?code=Y1ap3md66SM8YYUhNWll1nv8USXr3VL/kZZVGnibRNVKQaHZwMVkEQ==&img=https://raw.githubusercontent.com/gvashishtha/functions-pytorch/master/resources/assets/Bernese-Mountain-Dog-Temperament-long.jpg
 
 
 
