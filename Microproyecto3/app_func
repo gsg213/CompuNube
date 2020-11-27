@@ -1,22 +1,22 @@
 #!/bin/bash
 
 # Function app and storage account names must be unique.
-storageName=classifystorage
+storageName=classifstoragegus
 functionAppName=ClassifyFuncApp
 region=centralus
 pythonVersion=3.7
 
-# Create a resource group.
+echo "Create a resource group."
 az group create --name myResourceGroup --location $region
 
-# Create an Azure storage account in the resource group.
+echo "Create an Azure storage account in the resource group."
 az storage account create \
   --name $storageName \
   --location $region \
   --resource-group myResourceGroup \
   --sku Standard_LRS
 
-# Create a serverless function app in the resource group.
+echo "Create a serverless function app in the resource group."
 az functionapp create \
   --name $functionAppName \
   --storage-account $storageName \
@@ -27,5 +27,8 @@ az functionapp create \
   --runtime-version $pythonVersion \
   --functions-version 2
 
+echo "Sleep 20 sec"
+sleep 20
 
+echo "Publish app"
 func azure functionapp publish $functionAppName --build remote
