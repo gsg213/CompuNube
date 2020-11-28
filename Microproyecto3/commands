@@ -105,6 +105,17 @@ chmod +x app_func
 https://classifyfuncapp.azurewebsites.net/api/classify?code=Y1ap3md66SM8YYUhNWll1nv8USXr3VL/kZZVGnibRNVKQaHZwMVkEQ==&img=https://raw.githubusercontent.com/gvashishtha/functions-pytorch/master/resources/assets/Bernese-Mountain-Dog-Temperament-long.jpg
 
 
+## images for test
+# plane
+https://i.imgur.com/mBdfveS.png
+
+#dog
+https://raw.githubusercontent.com/gvashishtha/functions-pytorch/master/resources/assets/Bernese-Mountain-Dog-Temperament-long.jpg
+
+#car
+https://i.imgur.com/KkAfQv7.jpeg
+
+
 
 
 
